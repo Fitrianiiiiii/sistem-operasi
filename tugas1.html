@@ -1,0 +1,1057 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Tugas 1 - Penjadwalan Disk | Fitriani</title>
+    <style>
+        :root {
+            --bg: #fff;
+            --fg: #1d2433;
+            --mu: #5b6578;
+            --ac: #1f5fbf;
+            --bd: #d9dee8;
+            --hd: #eef3fb
+        }
+
+        @media(prefers-color-scheme:dark) {
+            :root {
+                --bg: #141922;
+                --fg: #e8ecf3;
+                --mu: #9aa5b8;
+                --ac: #7fb0ff;
+                --bd: #2c3547;
+                --hd: #1d2634
+            }
+        }
+
+        * {
+            box-sizing: border-box
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--fg);
+            font: 16px/1.65 system-ui, sans-serif
+        }
+
+        header {
+            background: var(--hd);
+            border-bottom: 1px solid var(--bd);
+            padding: 14px 20px
+        }
+
+        header b {
+            font-size: 18px
+        }
+
+        nav a {
+            margin-right: 16px;
+            color: var(--ac);
+            text-decoration: none;
+            font-weight: 600
+        }
+
+        main {
+            max-width: 860px;
+            margin: auto;
+            padding: 20px
+        }
+
+        h1,
+        h2,
+        h3 {
+            line-height: 1.25
+        }
+
+        h2 {
+            margin-top: 2rem;
+            border-bottom: 1px solid var(--bd);
+            padding-bottom: 4px
+        }
+
+        .w {
+            overflow-x: auto
+        }
+
+        table {
+            border-collapse: collapse;
+            margin: 10px 0;
+            font-size: 14px
+        }
+
+        th,
+        td {
+            border: 1px solid var(--bd);
+            padding: 4px 9px;
+            text-align: center
+        }
+
+        th {
+            background: var(--hd)
+        }
+
+        .note {
+            background: var(--hd);
+            border-left: 4px solid var(--ac);
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 14px
+        }
+
+        svg text {
+            fill: var(--fg);
+            font: 11px system-ui
+        }
+
+        svg .l {
+            stroke: var(--ac);
+            fill: none;
+            stroke-width: 1.6
+        }
+
+        svg .g {
+            stroke: var(--bd)
+        }
+
+        footer {
+            text-align: center;
+            color: var(--mu);
+            font-size: 13px;
+            padding: 24px
+        }
+    </style>
+</head>
+
+<body>
+    <header><b>Fitriani</b> &middot; NIM 2503010129 &middot; Sistem Operasi Kelas C<nav><a
+                href="index.html">Beranda</a><a href="tugas1.html">Tugas 1</a><a href="tugas2.html">Tugas 2</a></nav>
+    </header>
+    <main>
+        <h1>Tugas 1: Penjadwalan Disk</h1>
+        <p>Hard disk memiliki 200 track (0&ndash;199), head awal di track <b>50</b>.<br>Antrian:
+            <code>62, 170, 43, 150, 23, 16, 185, 123, 67, 43, 162, 23, 71, 111, 43, 178</code>
+        </p>
+        <div class="note"><b>Asumsi:</b> head awal bergerak ke arah track yang lebih besar (naik). Pada C-SCAN dan
+            C-LOOK, lompatan balik dihitung sebagai lintasan.</div>
+        <h2>Ringkasan</h2>
+        <div class="w">
+            <table>
+                <tr>
+                    <th>Algoritma</th>
+                    <th>Total lintasan</th>
+                </tr>
+                <tr>
+                    <td>FCFS</td>
+                    <td>1348</td>
+                </tr>
+                <tr>
+                    <td>SSTF</td>
+                    <td>318</td>
+                </tr>
+                <tr>
+                    <td>SCAN</td>
+                    <td>332</td>
+                </tr>
+                <tr>
+                    <td>C-SCAN</td>
+                    <td>391</td>
+                </tr>
+                <tr>
+                    <td>LOOK</td>
+                    <td>304</td>
+                </tr>
+                <tr>
+                    <td>C-LOOK</td>
+                    <td>331</td>
+                </tr>
+            </table>
+        </div>
+        <h2>FCFS</h2>
+        <p>Dilayani sesuai urutan antrian.</p>
+        <p>Urutan: 50 &rarr; 62 &rarr; 170 &rarr; 43 &rarr; 150 &rarr; 23 &rarr; 16 &rarr; 185 &rarr; 123 &rarr; 67
+            &rarr; 43 &rarr; 162 &rarr; 23 &rarr; 71 &rarr; 111 &rarr; 43 &rarr; 178</p>
+        <div class="w">
+            <table>
+                <tr>
+                    <th>No</th>
+                    <th>Dari</th>
+                    <th>Ke</th>
+                    <th>Jarak</th>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>50</td>
+                    <td>62</td>
+                    <td>12</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>62</td>
+                    <td>170</td>
+                    <td>108</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>170</td>
+                    <td>43</td>
+                    <td>127</td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>43</td>
+                    <td>150</td>
+                    <td>107</td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td>150</td>
+                    <td>23</td>
+                    <td>127</td>
+                </tr>
+                <tr>
+                    <td>6</td>
+                    <td>23</td>
+                    <td>16</td>
+                    <td>7</td>
+                </tr>
+                <tr>
+                    <td>7</td>
+                    <td>16</td>
+                    <td>185</td>
+                    <td>169</td>
+                </tr>
+                <tr>
+                    <td>8</td>
+                    <td>185</td>
+                    <td>123</td>
+                    <td>62</td>
+                </tr>
+                <tr>
+                    <td>9</td>
+                    <td>123</td>
+                    <td>67</td>
+                    <td>56</td>
+                </tr>
+                <tr>
+                    <td>10</td>
+                    <td>67</td>
+                    <td>43</td>
+                    <td>24</td>
+                </tr>
+                <tr>
+                    <td>11</td>
+                    <td>43</td>
+                    <td>162</td>
+                    <td>119</td>
+                </tr>
+                <tr>
+                    <td>12</td>
+                    <td>162</td>
+                    <td>23</td>
+                    <td>139</td>
+                </tr>
+                <tr>
+                    <td>13</td>
+                    <td>23</td>
+                    <td>71</td>
+                    <td>48</td>
+                </tr>
+                <tr>
+                    <td>14</td>
+                    <td>71</td>
+                    <td>111</td>
+                    <td>40</td>
+                </tr>
+                <tr>
+                    <td>15</td>
+                    <td>111</td>
+                    <td>43</td>
+                    <td>68</td>
+                </tr>
+                <tr>
+                    <td>16</td>
+                    <td>43</td>
+                    <td>178</td>
+                    <td>135</td>
+                </tr>
+                <tr>
+                    <th colspan="3">Total lintasan</th>
+                    <th>1348</th>
+                </tr>
+            </table>
+        </div>
+        <p><b>Total = 12 + 108 + 127 + 107 + 127 + 7 + 169 + 62 + 56 + 24 + 119 + 139 + 48 + 40 + 68 + 135 = 1348
+                track</b></p>
+        <div class="w"><svg viewBox="0 0 700 414" width="100%" role="img">
+                <line class="g" x1="30.0" x2="30.0" y1="20" y2="404" /><text x="22.0" y="14">0</text>
+                <line class="g" x1="190.80402010050253" x2="190.80402010050253" y1="20" y2="404" /><text
+                    x="182.80402010050253" y="14">50</text>
+                <line class="g" x1="351.60804020100505" x2="351.60804020100505" y1="20" y2="404" /><text
+                    x="343.60804020100505" y="14">100</text>
+                <line class="g" x1="512.4120603015076" x2="512.4120603015076" y1="20" y2="404" /><text
+                    x="504.4120603015076" y="14">150</text><text x="662.0" y="14">199</text>
+                <polyline class="l"
+                    points="191,30 229,52 577,74 168,96 512,118 104,140 81,162 625,184 426,206 245,228 168,250 551,272 104,294 258,316 387,338 168,360 602,382" />
+                <circle cx="191" cy="30" r="3" fill="var(--ac)" /><text x="197" y="34">50</text>
+                <circle cx="229" cy="52" r="3" fill="var(--ac)" /><text x="235" y="56">62</text>
+                <circle cx="577" cy="74" r="3" fill="var(--ac)" /><text x="583" y="78">170</text>
+                <circle cx="168" cy="96" r="3" fill="var(--ac)" /><text x="174" y="100">43</text>
+                <circle cx="512" cy="118" r="3" fill="var(--ac)" /><text x="518" y="122">150</text>
+                <circle cx="104" cy="140" r="3" fill="var(--ac)" /><text x="110" y="144">23</text>
+                <circle cx="81" cy="162" r="3" fill="var(--ac)" /><text x="87" y="166">16</text>
+                <circle cx="625" cy="184" r="3" fill="var(--ac)" /><text x="631" y="188">185</text>
+                <circle cx="426" cy="206" r="3" fill="var(--ac)" /><text x="432" y="210">123</text>
+                <circle cx="245" cy="228" r="3" fill="var(--ac)" /><text x="251" y="232">67</text>
+                <circle cx="168" cy="250" r="3" fill="var(--ac)" /><text x="174" y="254">43</text>
+                <circle cx="551" cy="272" r="3" fill="var(--ac)" /><text x="557" y="276">162</text>
+                <circle cx="104" cy="294" r="3" fill="var(--ac)" /><text x="110" y="298">23</text>
+                <circle cx="258" cy="316" r="3" fill="var(--ac)" /><text x="264" y="320">71</text>
+                <circle cx="387" cy="338" r="3" fill="var(--ac)" /><text x="393" y="342">111</text>
+                <circle cx="168" cy="360" r="3" fill="var(--ac)" /><text x="174" y="364">43</text>
+                <circle cx="602" cy="382" r="3" fill="var(--ac)" /><text x="608" y="386">178</text>
+            </svg></div>
+        <h2>SSTF</h2>
+        <p>Selalu menuju track terdekat dari posisi head.</p>
+        <p>Urutan: 50 &rarr; 43 &rarr; 43 &rarr; 43 &rarr; 62 &rarr; 67 &rarr; 71 &rarr; 111 &rarr; 123 &rarr; 150
+            &rarr; 162 &rarr; 170 &rarr; 178 &rarr; 185 &rarr; 23 &rarr; 23 &rarr; 16</p>
+        <div class="w">
+            <table>
+                <tr>
+                    <th>No</th>
+                    <th>Dari</th>
+                    <th>Ke</th>
+                    <th>Jarak</th>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>50</td>
+                    <td>43</td>
+                    <td>7</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>43</td>
+                    <td>43</td>
+                    <td>0</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>43</td>
+                    <td>43</td>
+                    <td>0</td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>43</td>
+                    <td>62</td>
+                    <td>19</td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td>62</td>
+                    <td>67</td>
+                    <td>5</td>
+                </tr>
+                <tr>
+                    <td>6</td>
+                    <td>67</td>
+                    <td>71</td>
+                    <td>4</td>
+                </tr>
+                <tr>
+                    <td>7</td>
+                    <td>71</td>
+                    <td>111</td>
+                    <td>40</td>
+                </tr>
+                <tr>
+                    <td>8</td>
+                    <td>111</td>
+                    <td>123</td>
+                    <td>12</td>
+                </tr>
+                <tr>
+                    <td>9</td>
+                    <td>123</td>
+                    <td>150</td>
+                    <td>27</td>
+                </tr>
+                <tr>
+                    <td>10</td>
+                    <td>150</td>
+                    <td>162</td>
+                    <td>12</td>
+                </tr>
+                <tr>
+                    <td>11</td>
+                    <td>162</td>
+                    <td>170</td>
+                    <td>8</td>
+                </tr>
+                <tr>
+                    <td>12</td>
+                    <td>170</td>
+                    <td>178</td>
+                    <td>8</td>
+                </tr>
+                <tr>
+                    <td>13</td>
+                    <td>178</td>
+                    <td>185</td>
+                    <td>7</td>
+                </tr>
+                <tr>
+                    <td>14</td>
+                    <td>185</td>
+                    <td>23</td>
+                    <td>162</td>
+                </tr>
+                <tr>
+                    <td>15</td>
+                    <td>23</td>
+                    <td>23</td>
+                    <td>0</td>
+                </tr>
+                <tr>
+                    <td>16</td>
+                    <td>23</td>
+                    <td>16</td>
+                    <td>7</td>
+                </tr>
+                <tr>
+                    <th colspan="3">Total lintasan</th>
+                    <th>318</th>
+                </tr>
+            </table>
+        </div>
+        <p><b>Total = 7 + 0 + 0 + 19 + 5 + 4 + 40 + 12 + 27 + 12 + 8 + 8 + 7 + 162 + 0 + 7 = 318 track</b></p>
+        <div class="w"><svg viewBox="0 0 700 414" width="100%" role="img">
+                <line class="g" x1="30.0" x2="30.0" y1="20" y2="404" /><text x="22.0" y="14">0</text>
+                <line class="g" x1="190.80402010050253" x2="190.80402010050253" y1="20" y2="404" /><text
+                    x="182.80402010050253" y="14">50</text>
+                <line class="g" x1="351.60804020100505" x2="351.60804020100505" y1="20" y2="404" /><text
+                    x="343.60804020100505" y="14">100</text>
+                <line class="g" x1="512.4120603015076" x2="512.4120603015076" y1="20" y2="404" /><text
+                    x="504.4120603015076" y="14">150</text><text x="662.0" y="14">199</text>
+                <polyline class="l"
+                    points="191,30 168,52 168,74 168,96 229,118 245,140 258,162 387,184 426,206 512,228 551,250 577,272 602,294 625,316 104,338 104,360 81,382" />
+                <circle cx="191" cy="30" r="3" fill="var(--ac)" /><text x="197" y="34">50</text>
+                <circle cx="168" cy="52" r="3" fill="var(--ac)" /><text x="174" y="56">43</text>
+                <circle cx="168" cy="74" r="3" fill="var(--ac)" /><text x="174" y="78">43</text>
+                <circle cx="168" cy="96" r="3" fill="var(--ac)" /><text x="174" y="100">43</text>
+                <circle cx="229" cy="118" r="3" fill="var(--ac)" /><text x="235" y="122">62</text>
+                <circle cx="245" cy="140" r="3" fill="var(--ac)" /><text x="251" y="144">67</text>
+                <circle cx="258" cy="162" r="3" fill="var(--ac)" /><text x="264" y="166">71</text>
+                <circle cx="387" cy="184" r="3" fill="var(--ac)" /><text x="393" y="188">111</text>
+                <circle cx="426" cy="206" r="3" fill="var(--ac)" /><text x="432" y="210">123</text>
+                <circle cx="512" cy="228" r="3" fill="var(--ac)" /><text x="518" y="232">150</text>
+                <circle cx="551" cy="250" r="3" fill="var(--ac)" /><text x="557" y="254">162</text>
+                <circle cx="577" cy="272" r="3" fill="var(--ac)" /><text x="583" y="276">170</text>
+                <circle cx="602" cy="294" r="3" fill="var(--ac)" /><text x="608" y="298">178</text>
+                <circle cx="625" cy="316" r="3" fill="var(--ac)" /><text x="631" y="320">185</text>
+                <circle cx="104" cy="338" r="3" fill="var(--ac)" /><text x="110" y="342">23</text>
+                <circle cx="104" cy="360" r="3" fill="var(--ac)" /><text x="110" y="364">23</text>
+                <circle cx="81" cy="382" r="3" fill="var(--ac)" /><text x="87" y="386">16</text>
+            </svg></div>
+        <h2>SCAN</h2>
+        <p>Head bergerak naik sampai ujung (199), lalu berbalik turun sampai track terkecil yang diminta.</p>
+        <p>Urutan: 50 &rarr; 62 &rarr; 67 &rarr; 71 &rarr; 111 &rarr; 123 &rarr; 150 &rarr; 162 &rarr; 170 &rarr; 178
+            &rarr; 185 &rarr; 199 &rarr; 43 &rarr; 43 &rarr; 43 &rarr; 23 &rarr; 23 &rarr; 16</p>
+        <div class="w">
+            <table>
+                <tr>
+                    <th>No</th>
+                    <th>Dari</th>
+                    <th>Ke</th>
+                    <th>Jarak</th>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>50</td>
+                    <td>62</td>
+                    <td>12</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>62</td>
+                    <td>67</td>
+                    <td>5</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>67</td>
+                    <td>71</td>
+                    <td>4</td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>71</td>
+                    <td>111</td>
+                    <td>40</td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td>111</td>
+                    <td>123</td>
+                    <td>12</td>
+                </tr>
+                <tr>
+                    <td>6</td>
+                    <td>123</td>
+                    <td>150</td>
+                    <td>27</td>
+                </tr>
+                <tr>
+                    <td>7</td>
+                    <td>150</td>
+                    <td>162</td>
+                    <td>12</td>
+                </tr>
+                <tr>
+                    <td>8</td>
+                    <td>162</td>
+                    <td>170</td>
+                    <td>8</td>
+                </tr>
+                <tr>
+                    <td>9</td>
+                    <td>170</td>
+                    <td>178</td>
+                    <td>8</td>
+                </tr>
+                <tr>
+                    <td>10</td>
+                    <td>178</td>
+                    <td>185</td>
+                    <td>7</td>
+                </tr>
+                <tr>
+                    <td>11</td>
+                    <td>185</td>
+                    <td>199</td>
+                    <td>14</td>
+                </tr>
+                <tr>
+                    <td>12</td>
+                    <td>199</td>
+                    <td>43</td>
+                    <td>156</td>
+                </tr>
+                <tr>
+                    <td>13</td>
+                    <td>43</td>
+                    <td>43</td>
+                    <td>0</td>
+                </tr>
+                <tr>
+                    <td>14</td>
+                    <td>43</td>
+                    <td>43</td>
+                    <td>0</td>
+                </tr>
+                <tr>
+                    <td>15</td>
+                    <td>43</td>
+                    <td>23</td>
+                    <td>20</td>
+                </tr>
+                <tr>
+                    <td>16</td>
+                    <td>23</td>
+                    <td>23</td>
+                    <td>0</td>
+                </tr>
+                <tr>
+                    <td>17</td>
+                    <td>23</td>
+                    <td>16</td>
+                    <td>7</td>
+                </tr>
+                <tr>
+                    <th colspan="3">Total lintasan</th>
+                    <th>332</th>
+                </tr>
+            </table>
+        </div>
+        <p><b>Total = 12 + 5 + 4 + 40 + 12 + 27 + 12 + 8 + 8 + 7 + 14 + 156 + 0 + 0 + 20 + 0 + 7 = 332 track</b></p>
+        <div class="w"><svg viewBox="0 0 700 436" width="100%" role="img">
+                <line class="g" x1="30.0" x2="30.0" y1="20" y2="426" /><text x="22.0" y="14">0</text>
+                <line class="g" x1="190.80402010050253" x2="190.80402010050253" y1="20" y2="426" /><text
+                    x="182.80402010050253" y="14">50</text>
+                <line class="g" x1="351.60804020100505" x2="351.60804020100505" y1="20" y2="426" /><text
+                    x="343.60804020100505" y="14">100</text>
+                <line class="g" x1="512.4120603015076" x2="512.4120603015076" y1="20" y2="426" /><text
+                    x="504.4120603015076" y="14">150</text><text x="662.0" y="14">199</text>
+                <polyline class="l"
+                    points="191,30 229,52 245,74 258,96 387,118 426,140 512,162 551,184 577,206 602,228 625,250 670,272 168,294 168,316 168,338 104,360 104,382 81,404" />
+                <circle cx="191" cy="30" r="3" fill="var(--ac)" /><text x="197" y="34">50</text>
+                <circle cx="229" cy="52" r="3" fill="var(--ac)" /><text x="235" y="56">62</text>
+                <circle cx="245" cy="74" r="3" fill="var(--ac)" /><text x="251" y="78">67</text>
+                <circle cx="258" cy="96" r="3" fill="var(--ac)" /><text x="264" y="100">71</text>
+                <circle cx="387" cy="118" r="3" fill="var(--ac)" /><text x="393" y="122">111</text>
+                <circle cx="426" cy="140" r="3" fill="var(--ac)" /><text x="432" y="144">123</text>
+                <circle cx="512" cy="162" r="3" fill="var(--ac)" /><text x="518" y="166">150</text>
+                <circle cx="551" cy="184" r="3" fill="var(--ac)" /><text x="557" y="188">162</text>
+                <circle cx="577" cy="206" r="3" fill="var(--ac)" /><text x="583" y="210">170</text>
+                <circle cx="602" cy="228" r="3" fill="var(--ac)" /><text x="608" y="232">178</text>
+                <circle cx="625" cy="250" r="3" fill="var(--ac)" /><text x="631" y="254">185</text>
+                <circle cx="670" cy="272" r="3" fill="var(--ac)" /><text x="676" y="276">199</text>
+                <circle cx="168" cy="294" r="3" fill="var(--ac)" /><text x="174" y="298">43</text>
+                <circle cx="168" cy="316" r="3" fill="var(--ac)" /><text x="174" y="320">43</text>
+                <circle cx="168" cy="338" r="3" fill="var(--ac)" /><text x="174" y="342">43</text>
+                <circle cx="104" cy="360" r="3" fill="var(--ac)" /><text x="110" y="364">23</text>
+                <circle cx="104" cy="382" r="3" fill="var(--ac)" /><text x="110" y="386">23</text>
+                <circle cx="81" cy="404" r="3" fill="var(--ac)" /><text x="87" y="408">16</text>
+            </svg></div>
+        <h2>C-SCAN</h2>
+        <p>Head naik sampai 199, melompat ke track 0 (lompatan dihitung), lalu naik lagi melayani sisanya.</p>
+        <p>Urutan: 50 &rarr; 62 &rarr; 67 &rarr; 71 &rarr; 111 &rarr; 123 &rarr; 150 &rarr; 162 &rarr; 170 &rarr; 178
+            &rarr; 185 &rarr; 199 &rarr; 0 &rarr; 16 &rarr; 23 &rarr; 23 &rarr; 43 &rarr; 43 &rarr; 43</p>
+        <div class="w">
+            <table>
+                <tr>
+                    <th>No</th>
+                    <th>Dari</th>
+                    <th>Ke</th>
+                    <th>Jarak</th>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>50</td>
+                    <td>62</td>
+                    <td>12</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>62</td>
+                    <td>67</td>
+                    <td>5</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>67</td>
+                    <td>71</td>
+                    <td>4</td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>71</td>
+                    <td>111</td>
+                    <td>40</td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td>111</td>
+                    <td>123</td>
+                    <td>12</td>
+                </tr>
+                <tr>
+                    <td>6</td>
+                    <td>123</td>
+                    <td>150</td>
+                    <td>27</td>
+                </tr>
+                <tr>
+                    <td>7</td>
+                    <td>150</td>
+                    <td>162</td>
+                    <td>12</td>
+                </tr>
+                <tr>
+                    <td>8</td>
+                    <td>162</td>
+                    <td>170</td>
+                    <td>8</td>
+                </tr>
+                <tr>
+                    <td>9</td>
+                    <td>170</td>
+                    <td>178</td>
+                    <td>8</td>
+                </tr>
+                <tr>
+                    <td>10</td>
+                    <td>178</td>
+                    <td>185</td>
+                    <td>7</td>
+                </tr>
+                <tr>
+                    <td>11</td>
+                    <td>185</td>
+                    <td>199</td>
+                    <td>14</td>
+                </tr>
+                <tr>
+                    <td>12</td>
+                    <td>199</td>
+                    <td>0</td>
+                    <td>199</td>
+                </tr>
+                <tr>
+                    <td>13</td>
+                    <td>0</td>
+                    <td>16</td>
+                    <td>16</td>
+                </tr>
+                <tr>
+                    <td>14</td>
+                    <td>16</td>
+                    <td>23</td>
+                    <td>7</td>
+                </tr>
+                <tr>
+                    <td>15</td>
+                    <td>23</td>
+                    <td>23</td>
+                    <td>0</td>
+                </tr>
+                <tr>
+                    <td>16</td>
+                    <td>23</td>
+                    <td>43</td>
+                    <td>20</td>
+                </tr>
+                <tr>
+                    <td>17</td>
+                    <td>43</td>
+                    <td>43</td>
+                    <td>0</td>
+                </tr>
+                <tr>
+                    <td>18</td>
+                    <td>43</td>
+                    <td>43</td>
+                    <td>0</td>
+                </tr>
+                <tr>
+                    <th colspan="3">Total lintasan</th>
+                    <th>391</th>
+                </tr>
+            </table>
+        </div>
+        <p><b>Total = 12 + 5 + 4 + 40 + 12 + 27 + 12 + 8 + 8 + 7 + 14 + 199 + 16 + 7 + 0 + 20 + 0 + 0 = 391 track</b>
+        </p>
+        <div class="w"><svg viewBox="0 0 700 458" width="100%" role="img">
+                <line class="g" x1="30.0" x2="30.0" y1="20" y2="448" /><text x="22.0" y="14">0</text>
+                <line class="g" x1="190.80402010050253" x2="190.80402010050253" y1="20" y2="448" /><text
+                    x="182.80402010050253" y="14">50</text>
+                <line class="g" x1="351.60804020100505" x2="351.60804020100505" y1="20" y2="448" /><text
+                    x="343.60804020100505" y="14">100</text>
+                <line class="g" x1="512.4120603015076" x2="512.4120603015076" y1="20" y2="448" /><text
+                    x="504.4120603015076" y="14">150</text><text x="662.0" y="14">199</text>
+                <polyline class="l"
+                    points="191,30 229,52 245,74 258,96 387,118 426,140 512,162 551,184 577,206 602,228 625,250 670,272 30,294 81,316 104,338 104,360 168,382 168,404 168,426" />
+                <circle cx="191" cy="30" r="3" fill="var(--ac)" /><text x="197" y="34">50</text>
+                <circle cx="229" cy="52" r="3" fill="var(--ac)" /><text x="235" y="56">62</text>
+                <circle cx="245" cy="74" r="3" fill="var(--ac)" /><text x="251" y="78">67</text>
+                <circle cx="258" cy="96" r="3" fill="var(--ac)" /><text x="264" y="100">71</text>
+                <circle cx="387" cy="118" r="3" fill="var(--ac)" /><text x="393" y="122">111</text>
+                <circle cx="426" cy="140" r="3" fill="var(--ac)" /><text x="432" y="144">123</text>
+                <circle cx="512" cy="162" r="3" fill="var(--ac)" /><text x="518" y="166">150</text>
+                <circle cx="551" cy="184" r="3" fill="var(--ac)" /><text x="557" y="188">162</text>
+                <circle cx="577" cy="206" r="3" fill="var(--ac)" /><text x="583" y="210">170</text>
+                <circle cx="602" cy="228" r="3" fill="var(--ac)" /><text x="608" y="232">178</text>
+                <circle cx="625" cy="250" r="3" fill="var(--ac)" /><text x="631" y="254">185</text>
+                <circle cx="670" cy="272" r="3" fill="var(--ac)" /><text x="676" y="276">199</text>
+                <circle cx="30" cy="294" r="3" fill="var(--ac)" /><text x="36" y="298">0</text>
+                <circle cx="81" cy="316" r="3" fill="var(--ac)" /><text x="87" y="320">16</text>
+                <circle cx="104" cy="338" r="3" fill="var(--ac)" /><text x="110" y="342">23</text>
+                <circle cx="104" cy="360" r="3" fill="var(--ac)" /><text x="110" y="364">23</text>
+                <circle cx="168" cy="382" r="3" fill="var(--ac)" /><text x="174" y="386">43</text>
+                <circle cx="168" cy="404" r="3" fill="var(--ac)" /><text x="174" y="408">43</text>
+                <circle cx="168" cy="426" r="3" fill="var(--ac)" /><text x="174" y="430">43</text>
+            </svg></div>
+        <h2>LOOK</h2>
+        <p>Seperti SCAN, tetapi berbalik arah di permintaan terjauh (185), bukan di ujung disk.</p>
+        <p>Urutan: 50 &rarr; 62 &rarr; 67 &rarr; 71 &rarr; 111 &rarr; 123 &rarr; 150 &rarr; 162 &rarr; 170 &rarr; 178
+            &rarr; 185 &rarr; 43 &rarr; 43 &rarr; 43 &rarr; 23 &rarr; 23 &rarr; 16</p>
+        <div class="w">
+            <table>
+                <tr>
+                    <th>No</th>
+                    <th>Dari</th>
+                    <th>Ke</th>
+                    <th>Jarak</th>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>50</td>
+                    <td>62</td>
+                    <td>12</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>62</td>
+                    <td>67</td>
+                    <td>5</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>67</td>
+                    <td>71</td>
+                    <td>4</td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>71</td>
+                    <td>111</td>
+                    <td>40</td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td>111</td>
+                    <td>123</td>
+                    <td>12</td>
+                </tr>
+                <tr>
+                    <td>6</td>
+                    <td>123</td>
+                    <td>150</td>
+                    <td>27</td>
+                </tr>
+                <tr>
+                    <td>7</td>
+                    <td>150</td>
+                    <td>162</td>
+                    <td>12</td>
+                </tr>
+                <tr>
+                    <td>8</td>
+                    <td>162</td>
+                    <td>170</td>
+                    <td>8</td>
+                </tr>
+                <tr>
+                    <td>9</td>
+                    <td>170</td>
+                    <td>178</td>
+                    <td>8</td>
+                </tr>
+                <tr>
+                    <td>10</td>
+                    <td>178</td>
+                    <td>185</td>
+                    <td>7</td>
+                </tr>
+                <tr>
+                    <td>11</td>
+                    <td>185</td>
+                    <td>43</td>
+                    <td>142</td>
+                </tr>
+                <tr>
+                    <td>12</td>
+                    <td>43</td>
+                    <td>43</td>
+                    <td>0</td>
+                </tr>
+                <tr>
+                    <td>13</td>
+                    <td>43</td>
+                    <td>43</td>
+                    <td>0</td>
+                </tr>
+                <tr>
+                    <td>14</td>
+                    <td>43</td>
+                    <td>23</td>
+                    <td>20</td>
+                </tr>
+                <tr>
+                    <td>15</td>
+                    <td>23</td>
+                    <td>23</td>
+                    <td>0</td>
+                </tr>
+                <tr>
+                    <td>16</td>
+                    <td>23</td>
+                    <td>16</td>
+                    <td>7</td>
+                </tr>
+                <tr>
+                    <th colspan="3">Total lintasan</th>
+                    <th>304</th>
+                </tr>
+            </table>
+        </div>
+        <p><b>Total = 12 + 5 + 4 + 40 + 12 + 27 + 12 + 8 + 8 + 7 + 142 + 0 + 0 + 20 + 0 + 7 = 304 track</b></p>
+        <div class="w"><svg viewBox="0 0 700 414" width="100%" role="img">
+                <line class="g" x1="30.0" x2="30.0" y1="20" y2="404" /><text x="22.0" y="14">0</text>
+                <line class="g" x1="190.80402010050253" x2="190.80402010050253" y1="20" y2="404" /><text
+                    x="182.80402010050253" y="14">50</text>
+                <line class="g" x1="351.60804020100505" x2="351.60804020100505" y1="20" y2="404" /><text
+                    x="343.60804020100505" y="14">100</text>
+                <line class="g" x1="512.4120603015076" x2="512.4120603015076" y1="20" y2="404" /><text
+                    x="504.4120603015076" y="14">150</text><text x="662.0" y="14">199</text>
+                <polyline class="l"
+                    points="191,30 229,52 245,74 258,96 387,118 426,140 512,162 551,184 577,206 602,228 625,250 168,272 168,294 168,316 104,338 104,360 81,382" />
+                <circle cx="191" cy="30" r="3" fill="var(--ac)" /><text x="197" y="34">50</text>
+                <circle cx="229" cy="52" r="3" fill="var(--ac)" /><text x="235" y="56">62</text>
+                <circle cx="245" cy="74" r="3" fill="var(--ac)" /><text x="251" y="78">67</text>
+                <circle cx="258" cy="96" r="3" fill="var(--ac)" /><text x="264" y="100">71</text>
+                <circle cx="387" cy="118" r="3" fill="var(--ac)" /><text x="393" y="122">111</text>
+                <circle cx="426" cy="140" r="3" fill="var(--ac)" /><text x="432" y="144">123</text>
+                <circle cx="512" cy="162" r="3" fill="var(--ac)" /><text x="518" y="166">150</text>
+                <circle cx="551" cy="184" r="3" fill="var(--ac)" /><text x="557" y="188">162</text>
+                <circle cx="577" cy="206" r="3" fill="var(--ac)" /><text x="583" y="210">170</text>
+                <circle cx="602" cy="228" r="3" fill="var(--ac)" /><text x="608" y="232">178</text>
+                <circle cx="625" cy="250" r="3" fill="var(--ac)" /><text x="631" y="254">185</text>
+                <circle cx="168" cy="272" r="3" fill="var(--ac)" /><text x="174" y="276">43</text>
+                <circle cx="168" cy="294" r="3" fill="var(--ac)" /><text x="174" y="298">43</text>
+                <circle cx="168" cy="316" r="3" fill="var(--ac)" /><text x="174" y="320">43</text>
+                <circle cx="104" cy="338" r="3" fill="var(--ac)" /><text x="110" y="342">23</text>
+                <circle cx="104" cy="360" r="3" fill="var(--ac)" /><text x="110" y="364">23</text>
+                <circle cx="81" cy="382" r="3" fill="var(--ac)" /><text x="87" y="386">16</text>
+            </svg></div>
+        <h2>C-LOOK</h2>
+        <p>Seperti C-SCAN, tetapi naik sampai 185 lalu melompat ke permintaan terkecil (16) (lompatan dihitung).</p>
+        <p>Urutan: 50 &rarr; 62 &rarr; 67 &rarr; 71 &rarr; 111 &rarr; 123 &rarr; 150 &rarr; 162 &rarr; 170 &rarr; 178
+            &rarr; 185 &rarr; 16 &rarr; 23 &rarr; 23 &rarr; 43 &rarr; 43 &rarr; 43</p>
+        <div class="w">
+            <table>
+                <tr>
+                    <th>No</th>
+                    <th>Dari</th>
+                    <th>Ke</th>
+                    <th>Jarak</th>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>50</td>
+                    <td>62</td>
+                    <td>12</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>62</td>
+                    <td>67</td>
+                    <td>5</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>67</td>
+                    <td>71</td>
+                    <td>4</td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>71</td>
+                    <td>111</td>
+                    <td>40</td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td>111</td>
+                    <td>123</td>
+                    <td>12</td>
+                </tr>
+                <tr>
+                    <td>6</td>
+                    <td>123</td>
+                    <td>150</td>
+                    <td>27</td>
+                </tr>
+                <tr>
+                    <td>7</td>
+                    <td>150</td>
+                    <td>162</td>
+                    <td>12</td>
+                </tr>
+                <tr>
+                    <td>8</td>
+                    <td>162</td>
+                    <td>170</td>
+                    <td>8</td>
+                </tr>
+                <tr>
+                    <td>9</td>
+                    <td>170</td>
+                    <td>178</td>
+                    <td>8</td>
+                </tr>
+                <tr>
+                    <td>10</td>
+                    <td>178</td>
+                    <td>185</td>
+                    <td>7</td>
+                </tr>
+                <tr>
+                    <td>11</td>
+                    <td>185</td>
+                    <td>16</td>
+                    <td>169</td>
+                </tr>
+                <tr>
+                    <td>12</td>
+                    <td>16</td>
+                    <td>23</td>
+                    <td>7</td>
+                </tr>
+                <tr>
+                    <td>13</td>
+                    <td>23</td>
+                    <td>23</td>
+                    <td>0</td>
+                </tr>
+                <tr>
+                    <td>14</td>
+                    <td>23</td>
+                    <td>43</td>
+                    <td>20</td>
+                </tr>
+                <tr>
+                    <td>15</td>
+                    <td>43</td>
+                    <td>43</td>
+                    <td>0</td>
+                </tr>
+                <tr>
+                    <td>16</td>
+                    <td>43</td>
+                    <td>43</td>
+                    <td>0</td>
+                </tr>
+                <tr>
+                    <th colspan="3">Total lintasan</th>
+                    <th>331</th>
+                </tr>
+            </table>
+        </div>
+        <p><b>Total = 12 + 5 + 4 + 40 + 12 + 27 + 12 + 8 + 8 + 7 + 169 + 7 + 0 + 20 + 0 + 0 = 331 track</b></p>
+        <div class="w"><svg viewBox="0 0 700 414" width="100%" role="img">
+                <line class="g" x1="30.0" x2="30.0" y1="20" y2="404" /><text x="22.0" y="14">0</text>
+                <line class="g" x1="190.80402010050253" x2="190.80402010050253" y1="20" y2="404" /><text
+                    x="182.80402010050253" y="14">50</text>
+                <line class="g" x1="351.60804020100505" x2="351.60804020100505" y1="20" y2="404" /><text
+                    x="343.60804020100505" y="14">100</text>
+                <line class="g" x1="512.4120603015076" x2="512.4120603015076" y1="20" y2="404" /><text
+                    x="504.4120603015076" y="14">150</text><text x="662.0" y="14">199</text>
+                <polyline class="l"
+                    points="191,30 229,52 245,74 258,96 387,118 426,140 512,162 551,184 577,206 602,228 625,250 81,272 104,294 104,316 168,338 168,360 168,382" />
+                <circle cx="191" cy="30" r="3" fill="var(--ac)" /><text x="197" y="34">50</text>
+                <circle cx="229" cy="52" r="3" fill="var(--ac)" /><text x="235" y="56">62</text>
+                <circle cx="245" cy="74" r="3" fill="var(--ac)" /><text x="251" y="78">67</text>
+                <circle cx="258" cy="96" r="3" fill="var(--ac)" /><text x="264" y="100">71</text>
+                <circle cx="387" cy="118" r="3" fill="var(--ac)" /><text x="393" y="122">111</text>
+                <circle cx="426" cy="140" r="3" fill="var(--ac)" /><text x="432" y="144">123</text>
+                <circle cx="512" cy="162" r="3" fill="var(--ac)" /><text x="518" y="166">150</text>
+                <circle cx="551" cy="184" r="3" fill="var(--ac)" /><text x="557" y="188">162</text>
+                <circle cx="577" cy="206" r="3" fill="var(--ac)" /><text x="583" y="210">170</text>
+                <circle cx="602" cy="228" r="3" fill="var(--ac)" /><text x="608" y="232">178</text>
+                <circle cx="625" cy="250" r="3" fill="var(--ac)" /><text x="631" y="254">185</text>
+                <circle cx="81" cy="272" r="3" fill="var(--ac)" /><text x="87" y="276">16</text>
+                <circle cx="104" cy="294" r="3" fill="var(--ac)" /><text x="110" y="298">23</text>
+                <circle cx="104" cy="316" r="3" fill="var(--ac)" /><text x="110" y="320">23</text>
+                <circle cx="168" cy="338" r="3" fill="var(--ac)" /><text x="174" y="342">43</text>
+                <circle cx="168" cy="360" r="3" fill="var(--ac)" /><text x="174" y="364">43</text>
+                <circle cx="168" cy="382" r="3" fill="var(--ac)" /><text x="174" y="386">43</text>
+            </svg></div>
+    </main>
+    <footer>&copy; 2026 Fitriani &mdash; Teknik Informatika, Universitas Perjuangan Tasikmalaya</footer>
+</body>
+
+</html>

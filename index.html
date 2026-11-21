@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Beranda | Fitriani</title>
+    <style>
+        :root {
+            --bg: #fff;
+            --fg: #1d2433;
+            --mu: #5b6578;
+            --ac: #1f5fbf;
+            --bd: #d9dee8;
+            --hd: #eef3fb
+        }
+
+        @media(prefers-color-scheme:dark) {
+            :root {
+                --bg: #141922;
+                --fg: #e8ecf3;
+                --mu: #9aa5b8;
+                --ac: #7fb0ff;
+                --bd: #2c3547;
+                --hd: #1d2634
+            }
+        }
+
+        * {
+            box-sizing: border-box
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--fg);
+            font: 16px/1.65 system-ui, sans-serif
+        }
+
+        header {
+            background: var(--hd);
+            border-bottom: 1px solid var(--bd);
+            padding: 14px 20px
+        }
+
+        header b {
+            font-size: 18px
+        }
+
+        nav a {
+            margin-right: 16px;
+            color: var(--ac);
+            text-decoration: none;
+            font-weight: 600
+        }
+
+        main {
+            max-width: 860px;
+            margin: auto;
+            padding: 20px
+        }
+
+        h1,
+        h2,
+        h3 {
+            line-height: 1.25
+        }
+
+        h2 {
+            margin-top: 2rem;
+            border-bottom: 1px solid var(--bd);
+            padding-bottom: 4px
+        }
+
+        .w {
+            overflow-x: auto
+        }
+
+        table {
+            border-collapse: collapse;
+            margin: 10px 0;
+            font-size: 14px
+        }
+
+        th,
+        td {
+            border: 1px solid var(--bd);
+            padding: 4px 9px;
+            text-align: center
+        }
+
+        th {
+            background: var(--hd)
+        }
+
+        .note {
+            background: var(--hd);
+            border-left: 4px solid var(--ac);
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 14px
+        }
+
+        svg text {
+            fill: var(--fg);
+            font: 11px system-ui
+        }
+
+        svg .l {
+            stroke: var(--ac);
+            fill: none;
+            stroke-width: 1.6
+        }
+
+        svg .g {
+            stroke: var(--bd)
+        }
+
+        footer {
+            text-align: center;
+            color: var(--mu);
+            font-size: 13px;
+            padding: 24px
+        }
+    </style>
+</head>
+
+<body>
+    <header><b>Fitriani</b> &middot; NIM 2503010129 &middot; Sistem Operasi Kelas C<nav><a
+                href="index.html">Beranda</a><a href="tugas1.html">Tugas 1</a><a href="tugas2.html">Tugas 2</a></nav>
+    </header>
+    <main>
+        <h1>Tugas Sistem Operasi</h1>
+        <p>Nama: <b>Fitriani</b><br>NIM: <b>2503010129</b><br>Kelas: C, Semester Ganjil 2026/2027<br>Universitas
+            Perjuangan Tasikmalaya</p>
+        <h2>Daftar Tugas</h2>
+        <ul>
+            <li><a href="tugas1.html">Tugas 1</a>: Penjadwalan disk (FCFS, SSTF, SCAN, C-SCAN, LOOK, C-LOOK) &mdash;
+                deadline 23 November 2026</li>
+            <li><a href="tugas2.html">Tugas 2</a>: Penjadwalan proses (FCFS, SJF, SRT, HRN, RR q=3 dan q=5) &mdash;
+                deadline 30 November 2026</li>
+        </ul>
+    </main>
+    <footer>&copy; 2026 Fitriani &mdash; Teknik Informatika, Universitas Perjuangan Tasikmalaya</footer>
+</body>
+
+</html>
